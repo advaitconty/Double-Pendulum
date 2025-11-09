@@ -20,7 +20,7 @@ struct UserData: Codable {
     var secondPendulumBobStringColor: Color = Color.orange
     var lastPositionOfPendulumBob1: CGSize?
     var lastPositionOfPendulumBob2: CGSize?
-    var firstPendulumBobStringLength: Int = 30
-    var secondPedulumBobStringLength: Int = 30
+    var firstPendulumBobStringLength: Double = 30
+    var secondPedulumBobStringLength: Double = 30
     var windowSize: CGSize = CGSize(width: 600, height: 600)
 }
