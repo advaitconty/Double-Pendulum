@@ -13,30 +13,26 @@ struct PendulumView: View {
     @State var width: Double = 500
     @StateObject var calculator: Calculator
     @Environment(\.colorScheme) var colorScheme
-    let timer = Timer.publish(every: 1 / 100, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 1 / 1000, on: .main, in: .common).autoconnect()
     
     init(userData: Binding<UserData>) {
         self._userData = userData
         let initialData = userData.wrappedValue
         self._calculator = StateObject(wrappedValue: Calculator(
-            originX: Double(initialData.windowSize.width / 2.0),
-            originY: 50.0,
-            firstPendulumStringLength: initialData.firstPendulumBobStringLength,
-            secondPendulumStringLength: initialData.secondPedulumBobStringLength,
-            pendulumBobMass1: 5.0,
-            pendulumBobMass2: 5.0,
-            angleOfPendulumBob1: .pi / 2.0,
-            angleOfPendulumBob2: .pi / 2.0,
-            gravitationConstant: 9.8,
-            centreOfBob1: .zero,
-            centreOfBob2: .zero,
-            rotationOfBob1: 0,
-            rotationOfBob2: 0,
+            originX: (initialData.windowSize.width / 2),
+            originY: 10.0,
+            firstPendulumStringLength: 120.0,
+            secondPendulumStringLength: 120.0,
+            pendulumBobMass1: 10.0,
+            pendulumBobMass2: 10.0,
+            angleOfPendulumBob1: Double.pi / 3.0,
+            angleOfPendulumBob2: Double.pi / 3.0,
+            gravitationConstant: 9.81,
             velocity1: 0,
             velocity2: 0,
             acceleration1: 0,
             acceleration2: 0,
-            timestep: 0.02
+            timestep: 0.01
         ))
     }
     
