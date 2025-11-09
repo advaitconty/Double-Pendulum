@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 class Calculator: ObservableObject {
-    @Published var originX: Double
-    @Published var originY: Double
+    var originX: Double
+    var originY: Double
     @Published var firstPendulumStringLength: Double
     @Published var secondPendulumStringLength: Double
     @Published var pendulumBobMass1: Double
@@ -19,18 +19,10 @@ class Calculator: ObservableObject {
     @Published var angleOfPendulumBob1: Double
     @Published var angleOfPendulumBob2: Double
     @Published var gravitationConstant: Double
-    var pivot1X: Double {
-        return Double(self.originX + self.firstPendulumStringLength * sin(self.angleOfPendulumBob1))
-    }
-    var pivot1Y: Double {
-        return Double(self.originY + self.firstPendulumStringLength * cos(self.angleOfPendulumBob1))
-    }
-    var pivot2X: Double {
-        return Double(self.pivot1X + CGFloat(self.secondPendulumStringLength) * CGFloat(sin(self.angleOfPendulumBob2)))
-    }
-    var pivot2Y: Double {
-        return Double(self.pivot1Y + CGFloat(self.secondPendulumStringLength) * CGFloat(cos(self.angleOfPendulumBob2)))
-    }
+    var pivot1X: Double = 3
+    var pivot1Y: Double = 3
+    var pivot2X: Double = 3
+    var pivot2Y: Double = 3
     var delta: Double {
         return self.angleOfPendulumBob1 - self.angleOfPendulumBob2
     }
@@ -79,17 +71,23 @@ class Calculator: ObservableObject {
         self.acceleration2 = acceleration2
         self.timestep = timestep
     }
-    
     func refresh() {
         // Basic calculations from the equations provided in teh paper
-        self.acceleration1 = (pendulumBobMass2 * firstPendulumStringLength * pow(acceleration1, 2) * sin(delta) * cos(delta) + pendulumBobMass2 * gravitationConstant * sin(rotationOfBob2) * cos(delta) + pendulumBobMass2 * secondPendulumStringLength * pow(acceleration2, 2) * sin(delta) - (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(rotationOfBob2)) / D1
-        self.acceleration2 = (-1 * pendulumBobMass2 * firstPendulumStringLength * pow(velocity1, 2) * sin(delta) * cos(delta) + (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob1) * cos(delta) - (pendulumBobMass1 + pendulumBobMass2) * firstPendulumStringLength * pow(velocity1, 2) * sin(delta) - (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob2)) / D2
+        self.acceleration1 = (pendulumBobMass2 * firstPendulumStringLength * pow(acceleration1, 2) * sin(delta) * cos(delta)
+                              + pendulumBobMass2 * gravitationConstant * sin(angleOfPendulumBob1) * cos(delta) +
+                              pendulumBobMass2 * secondPendulumStringLength * pow(acceleration2, 2) * sin(delta) -
+                              (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob2)) / D1
+        self.acceleration2 = (-1 * pendulumBobMass2 * firstPendulumStringLength * pow(velocity1, 2) * sin(delta) * cos(delta) +
+                               (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob1) * cos(delta) -
+                               (pendulumBobMass1 + pendulumBobMass2) * firstPendulumStringLength * pow(velocity1, 2) * sin(delta) - (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob2)) / D2
         self.velocity1 += acceleration1 * timestep
         self.velocity2 += acceleration2 * timestep
         self.angleOfPendulumBob1 += self.velocity1 * timestep
         self.angleOfPendulumBob2 += self.velocity2 * timestep
         
-        // The fun part - made because the Bob is the center for me and not the actual pivot
-        
+        self.pivot1X = Double(self.originX + self.firstPendulumStringLength * sin(self.angleOfPendulumBob1))
+        self.pivot1Y = Double(self.originY + self.firstPendulumStringLength * cos(self.angleOfPendulumBob1))
+        self.pivot2X = Double(self.pivot1X + CGFloat(self.secondPendulumStringLength) * CGFloat(sin(self.angleOfPendulumBob2)))
+        self.pivot2Y = Double(self.pivot1Y + CGFloat(self.secondPendulumStringLength) * CGFloat(cos(self.angleOfPendulumBob2)))
     }
 }
