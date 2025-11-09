@@ -11,56 +11,56 @@ import Combine
 struct PendulumView: View {
     @Binding var userData: UserData
     @State var width: Double = 500
-    @StateObject var calculator: Calculator = Calculator(originX: Double(500.0 / 2.0), originY: 50.0, firstPendulumStringLength: 50.0, secondPendulumStringLength: 30.0, pendulumBobMass1: 5.0, pendulumBobMass2: 5.0, angleOfPendulumBob1: (Double.pi / 2.0), angleOfPendulumBob2: (Double.pi / 2.0), gravitationConstant: 9.8, centreOfBob1: CGSize(width: CGFloat(500 / 2), height: CGFloat(50.0) + 50), centreOfBob2: CGSize(width: 500.0 / 2, height: CGFloat(30.0 + 50.0 + 50) + (500.0 / 10)), rotationOfBob1: -90, rotationOfBob2: -90, velocity1: 1.0, velocity2: 1.0, acceleration1: 1.0, acceleration2: 1.0, timestep: 0.02)
+    @StateObject var calculator: Calculator
+    @Environment(\.colorScheme) var colorScheme
     let timer = Timer.publish(every: 1 / 100, on: .main, in: .common).autoconnect()
-
-    func calculateOffsetForString(bob: Int) -> CGFloat {
-        if bob == 1 {
-            let halfOfLengthOfString: CGFloat = CGFloat(Double(userData.firstPendulumBobStringLength))
-            let radiusOfBob: CGFloat = CGFloat((userData.windowSize.height / 10.0) * 0.5)
-            return CGFloat(halfOfLengthOfString + radiusOfBob)
-        } else {
-            let halfOfLengthOfString: CGFloat = CGFloat(Double(userData.secondPedulumBobStringLength))
-            let radiusOfBob: CGFloat = CGFloat((userData.windowSize.height / 10.0) * 0.5)
-            return CGFloat(halfOfLengthOfString + radiusOfBob * 2)        }
-    }
     
-    func pendulumBob(bob: Int) -> some View {
-        Group {
-            ZStack {
-                Rectangle()
-                    .frame(width: 5, height: calculateOffsetForString(bob: bob))
-                    .offset(y: -CGFloat(calculateOffsetForString(bob: bob) * 0.5))
-                    .foregroundStyle(bob == 1 ? userData.firstPendulumBobStringColor : userData.secondPendulumBobStringColor)
-                Circle()
-                    .frame(width: userData.windowSize.height / 10)
-                    .foregroundStyle(bob == 1 ? userData.pendulumBobColor1 : userData.pendulumBobColor2)
-                //                    .foregroundStyle(.black)
-                
-            }
-        }
+    init(userData: Binding<UserData>) {
+        self._userData = userData
+        let initialData = userData.wrappedValue
+        self._calculator = StateObject(wrappedValue: Calculator(
+            originX: Double(initialData.windowSize.width / 2.0),
+            originY: 50.0,
+            firstPendulumStringLength: initialData.firstPendulumBobStringLength,
+            secondPendulumStringLength: initialData.secondPedulumBobStringLength,
+            pendulumBobMass1: 5.0,
+            pendulumBobMass2: 5.0,
+            angleOfPendulumBob1: .pi / 2.0,
+            angleOfPendulumBob2: .pi / 2.0,
+            gravitationConstant: 9.8,
+            centreOfBob1: .zero,
+            centreOfBob2: .zero,
+            rotationOfBob1: 0,
+            rotationOfBob2: 0,
+            velocity1: 0,
+            velocity2: 0,
+            acceleration1: 0,
+            acceleration2: 0,
+            timestep: 0.02
+        ))
     }
-    
     
     
     var body: some View {
-        GeometryReader { reader in
-            ZStack {
-                pendulumBob(bob: 1)
-                    .rotationEffect(Angle(radians: calculator.rotationOfBob1))
-                    .position(x: calculator.pivot1X, y: calculator.pivot1X)
-                pendulumBob(bob: 2)
-                    .rotationEffect(Angle(radians: calculator.rotationOfBob2))
-                    .position(x: calculator.pivot2X, y: calculator.pivot2Y)
+        ZStack {
+            Path { path in
+                path.move(to: CGPoint(x: calculator.originX, y: calculator.originY))
+                path.addLine(to: CGPoint(x: calculator.pivot1X, y: calculator.pivot1Y))
             }
-            .onChange(of: reader.size) {
-                width = Double(reader.size.width)
+            .stroke(Color.white)
+            Path { path in
+                path.move(to: CGPoint(x: calculator.pivot1X, y: calculator.pivot1Y))
+                path.addLine(to: CGPoint(x: calculator.pivot2X, y: calculator.pivot2Y))
             }
-            .onReceive(timer) { _ in
+            .stroke(Color.cyan)
+            .onAppear {
                 calculator.refresh()
             }
         }
         .frame(width: userData.windowSize.width, height: userData.windowSize.height)
+        .onReceive(timer) { _ in
+            calculator.refresh()
+        }
     }
 }
 
