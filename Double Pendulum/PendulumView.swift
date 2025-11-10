@@ -13,12 +13,74 @@ struct PendulumView: View {
     @State var width: Double = 500
     @StateObject var calculator: Calculator = Calculator()
     @Environment(\.colorScheme) var colorScheme
-    let timer = Timer.publish(every: 1 / 67, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 1 / 200, on: .main, in: .common).autoconnect()
     @Binding var timestep: Double
     @State var originPivotDragOffset: CGSize = CGSize(width: 0, height: 0)
     
+    private func midpoint(_ a: CGPoint, _ b: CGPoint) -> CGPoint {
+        CGPoint(x: (a.x + b.x) / 2, y: (a.y + b.y) / 2)
+    }
+    
     var body: some View {
         ZStack {
+            Canvas { context, size in
+                guard !calculator.trails1.isEmpty else { return }
+                
+                var patj = Path()
+                let points = calculator.trails1
+                
+                patj.move(to: points[0])
+                
+                for i in 1..<points.count {
+                    let mid = midpoint(points[i - 1], points[i])
+                    patj.addQuadCurve(to: mid, control: points[i-1])
+                }
+                patj.addLine(to: points.last!)
+                
+                let gradient = Gradient(colors: [
+                    .orange.opacity(0.1),
+                    .orange.opacity(0.5),
+                    .orange.opacity(0.9)
+                ])
+                let stroke = StrokeStyle(lineWidth: 3, lineCap: .round)
+                context.stroke(
+                    patj,
+                    with: .linearGradient(gradient,
+                                          startPoint: points.first!,
+                                          endPoint: points.last!),
+                    style: stroke
+                )
+            }
+            
+            Canvas { context, size in
+                guard !calculator.trails2.isEmpty else { return }
+                
+                var patj = Path()
+                let points = calculator.trails2
+                
+                patj.move(to: points[0])
+                
+                for i in 1..<points.count {
+                    let mid = midpoint(points[i - 1], points[i])
+                    patj.addQuadCurve(to: mid, control: points[i-1])
+                }
+                patj.addLine(to: points.last!)
+                
+                let gradient = Gradient(colors: [
+                    .orange.opacity(0.1),
+                    .orange.opacity(0.5),
+                    .orange.opacity(0.9)
+                ])
+                let stroke = StrokeStyle(lineWidth: 3, lineCap: .round)
+                context.stroke(
+                    patj,
+                    with: .linearGradient(gradient,
+                                          startPoint: points.first!,
+                                          endPoint: points.last!),
+                    style: stroke
+                )
+            }
+            
             Path { path in
                 path.move(to: CGPoint(x: calculator.originX, y: calculator.originY))
                 path.addLine(to: CGPoint(x: calculator.pivot1X, y: calculator.pivot1Y))
