@@ -10,8 +10,10 @@ import Foundation
 import Combine
 
 class Calculator: ObservableObject {
-    var originX: Double
-    var originY: Double
+    private var frameCounter = 0
+    private var trailUpdateInterval = 3
+    @Published var originX: Double
+    @Published var originY: Double
     @Published var firstPendulumStringLength: Double
     @Published var secondPendulumStringLength: Double
     @Published var pendulumBobMass1: Double
@@ -21,6 +23,7 @@ class Calculator: ObservableObject {
     @Published var gravitationConstant: Double
     @Published var trails1: [CGPoint] = []
     @Published var trails2: [CGPoint] = []
+    @Published var paused: Bool = false
     var maxTrailData1: Int = 100
     var maxTrailData2: Int = 100
     var pivot1X: Double = 0
@@ -28,7 +31,7 @@ class Calculator: ObservableObject {
     var pivot2X: Double = 0
     var pivot2Y: Double = 0
     var delta: Double {
-        return self.angleOfPendulumBob1 - self.angleOfPendulumBob2
+        return self.angleOfPendulumBob2 - self.angleOfPendulumBob1
     }
     
     // Acceleration and velocity stuff
@@ -50,8 +53,8 @@ class Calculator: ObservableObject {
     
     
     init() {
-        self.originX = 50.0
-        self.originY = 50.0
+        self.originX = 250.0
+        self.originY = 300.0
         self.firstPendulumStringLength = 120.0
         self.secondPendulumStringLength = 120.0
         self.pendulumBobMass1 = 50.0
@@ -87,13 +90,17 @@ class Calculator: ObservableObject {
         self.pivot2X = Double(self.pivot1X + Double(self.secondPendulumStringLength) * Double(sin(self.angleOfPendulumBob2)))
         self.pivot2Y = Double(self.pivot1Y + Double(self.secondPendulumStringLength) * Double(cos(self.angleOfPendulumBob2)))
         
-        trails1.append(CGPoint(x: pivot1X, y: pivot1Y))
-        trails2.append(CGPoint(x: pivot2X, y: pivot2Y))
-        if trails1.count > maxTrailData1 {
-            trails1.removeFirst()
-        }
-        if trails2.count > maxTrailData2 {
-            trails2.removeFirst()
+        frameCounter += 1
+        
+        if frameCounter % trailUpdateInterval == 0 {
+            trails1.append(CGPoint(x: pivot1X, y: pivot1Y))
+            trails2.append(CGPoint(x: pivot2X, y: pivot2Y))
+            if trails1.count > maxTrailData1 {
+                trails1.removeFirst()
+            }
+            if trails2.count > maxTrailData2 {
+                trails2.removeFirst()
+            }
         }
     }
 }

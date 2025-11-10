@@ -8,11 +8,17 @@
 import Foundation
 import SwiftUI
 
-struct UserData: Codable {
+struct UserData: Codable, Equatable {
     var pendulumBobColor1: Color = Color.red
     var pendulumBobColor2: Color = Color.green
     var pendulumBobMass1: Double = 10.0
     var pendulumBobMass2: Double = 10.0
+    var pendulumBobSize1: Double = 40.0
+    var pendulumBobSize2: Double = 40.0
+    var pendulumBobTrail1: Color = .red
+    var pendulumBobTrail2: Color = .green
+    var pendulumBob1TrailDataMaxLength: Int = 75
+    var pendulumBob2TrailDataMaxLength: Int = 75
     var gravitationalField: Double = 9.8
     var velocityOfBob1: Double = 0
     var velocityOfBob2: Double = 0
