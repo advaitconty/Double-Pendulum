@@ -1,0 +1,24 @@
+{
+  "originHash" : "c49f8e848c7bb888761cee5774f2f9722973d1b5d9e50f92393aeca502639bf1",
+  "pins" : [
+    {
+      "identity" : "compactslider",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/buh/CompactSlider.git",
+      "state" : {
+        "revision" : "f07c7a5d03a2d9541aae1b7ebff861b77561ee31",
+        "version" : "2.0.9"
+      }
+    },
+    {
+      "identity" : "forever",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jiachenyee/Forever.git",
+      "state" : {
+        "revision" : "90274e87842722d9b79e61431cbbef1c418944b6",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

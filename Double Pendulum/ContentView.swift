@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import CompactSlider
+import Forever
 
 struct ContentView: View {
+    @Forever("userData") var userData: UserData = UserData()
+    @State var timestep: Double = 0.02
     var body: some View {
-        GeometryReader { reader in
-            ZStack {
-                Circle()
-            }
+        PendulumView(userData: $userData, timestep: $timestep)
             .padding()
-        }
     }
 }
 

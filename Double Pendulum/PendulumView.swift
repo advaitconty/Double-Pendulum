@@ -11,31 +11,11 @@ import Combine
 struct PendulumView: View {
     @Binding var userData: UserData
     @State var width: Double = 500
-    @StateObject var calculator: Calculator
+    @StateObject var calculator: Calculator = Calculator()
     @Environment(\.colorScheme) var colorScheme
-    let timer = Timer.publish(every: 1 / 1000, on: .main, in: .common).autoconnect()
-    
-    init(userData: Binding<UserData>) {
-        self._userData = userData
-        let initialData = userData.wrappedValue
-        self._calculator = StateObject(wrappedValue: Calculator(
-            originX: (initialData.windowSize.width / 2),
-            originY: 10.0,
-            firstPendulumStringLength: 120.0,
-            secondPendulumStringLength: 120.0,
-            pendulumBobMass1: 10.0,
-            pendulumBobMass2: 10.0,
-            angleOfPendulumBob1: Double.pi / 3.0,
-            angleOfPendulumBob2: Double.pi / 3.0,
-            gravitationConstant: 9.81,
-            velocity1: 0,
-            velocity2: 0,
-            acceleration1: 0,
-            acceleration2: 0,
-            timestep: 0.01
-        ))
-    }
-    
+    let timer = Timer.publish(every: 1 / 67, on: .main, in: .common).autoconnect()
+    @Binding var timestep: Double
+    @State var originPivotDragOffset: CGSize = CGSize(width: 0, height: 0)
     
     var body: some View {
         ZStack {
@@ -43,15 +23,41 @@ struct PendulumView: View {
                 path.move(to: CGPoint(x: calculator.originX, y: calculator.originY))
                 path.addLine(to: CGPoint(x: calculator.pivot1X, y: calculator.pivot1Y))
             }
-            .stroke(Color.white)
+            .stroke(userData.firstPendulumBobStringColor)
             Path { path in
                 path.move(to: CGPoint(x: calculator.pivot1X, y: calculator.pivot1Y))
                 path.addLine(to: CGPoint(x: calculator.pivot2X, y: calculator.pivot2Y))
             }
-            .stroke(Color.cyan)
+            .stroke(userData.secondPendulumBobStringColor)
             .onAppear {
                 calculator.refresh()
             }
+            Circle()
+                .frame(width: 10)
+                .position(x: calculator.originX + originPivotDragOffset.width, y: calculator.originY + originPivotDragOffset.height)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            withAnimation {
+                                calculator.originX = value.location.x
+                                calculator.originY = value.location.y
+                            }
+                        }
+                        .onEnded { value in
+                            withAnimation {
+                                calculator.originX = value.location.x
+                                calculator.originY = value.location.y
+                            }
+                        }
+                )
+            Circle()
+                .frame(width: 50.0)
+                .position(x: calculator.pivot1X, y: calculator.pivot1Y)
+                .foregroundStyle(userData.pendulumBobColor1)
+            Circle()
+                .frame(width: 50.0)
+                .position(x: calculator.pivot2X, y: calculator.pivot2Y)
+                .foregroundStyle(userData.pendulumBobColor2)
         }
         .frame(width: userData.windowSize.width, height: userData.windowSize.height)
         .onReceive(timer) { _ in
@@ -61,5 +67,5 @@ struct PendulumView: View {
 }
 
 #Preview {
-    PendulumView(userData: .constant(UserData(pendulumBobColor1: .green, pendulumBobColor2: .black, firstPendulumBobStringColor: .blue, secondPendulumBobStringColor: .brown, lastPositionOfPendulumBob1: nil, lastPositionOfPendulumBob2: nil, firstPendulumBobStringLength: 50, secondPedulumBobStringLength: 30, windowSize: CGSize(width: 500, height: 500))))
+    PendulumView(userData: .constant(UserData(pendulumBobColor1: .green, pendulumBobColor2: .black, firstPendulumBobStringColor: .blue, secondPendulumBobStringColor: .brown, lastPositionOfPendulumBob1: nil, lastPositionOfPendulumBob2: nil, firstPendulumBobStringLength: 50, secondPedulumBobStringLength: 30, windowSize: CGSize(width: 500, height: 500))), calculator: Calculator(), timestep: .constant(0.02))
 }

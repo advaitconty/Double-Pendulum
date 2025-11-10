@@ -45,21 +45,21 @@ class Calculator: ObservableObject {
     
     
     
-    init(originX: Double, originY: Double, firstPendulumStringLength: Double, secondPendulumStringLength: Double, pendulumBobMass1: Double, pendulumBobMass2: Double, angleOfPendulumBob1: Double, angleOfPendulumBob2: Double, gravitationConstant: Double, velocity1: Double, velocity2: Double, acceleration1: Double, acceleration2: Double, timestep: Double) {
-        self.originX = originX
-        self.originY = originY
-        self.firstPendulumStringLength = firstPendulumStringLength
-        self.secondPendulumStringLength = secondPendulumStringLength
-        self.pendulumBobMass1 = pendulumBobMass1
-        self.pendulumBobMass2 = pendulumBobMass2
-        self.angleOfPendulumBob1 = angleOfPendulumBob1
-        self.angleOfPendulumBob2 = angleOfPendulumBob2
-        self.gravitationConstant = gravitationConstant
-        self.velocity1 = velocity1
-        self.velocity2 = velocity2
-        self.acceleration1 = acceleration1
-        self.acceleration2 = acceleration2
-        self.timestep = timestep
+    init() {
+        self.originX = 50.0
+        self.originY = 50.0
+        self.firstPendulumStringLength = 120.0
+        self.secondPendulumStringLength = 120.0
+        self.pendulumBobMass1 = 50.0
+        self.pendulumBobMass2 = 50.0
+        self.angleOfPendulumBob1 = (Double.pi / 2)
+        self.angleOfPendulumBob2 = Double.pi / 2
+        self.gravitationConstant = 9.81
+        self.velocity1 = 0.0
+        self.velocity2 = 0.0
+        self.acceleration1 = 0.0
+        self.acceleration2 = 0.0
+        self.timestep = 0.02
     }
     
     func refresh() {
@@ -71,7 +71,8 @@ class Calculator: ObservableObject {
         self.acceleration2 = ((-1 * pendulumBobMass2 * secondPendulumStringLength * pow(velocity2, 2) * sin(delta) * cos(delta)) +
                               (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob1) * cos(delta) -
                               (pendulumBobMass1 + pendulumBobMass2) * firstPendulumStringLength * pow(velocity1, 2) * sin(delta) -
-                              (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob2) ) / D2
+                              (pendulumBobMass1 + pendulumBobMass2) * gravitationConstant * sin(angleOfPendulumBob2)) / D2
+        
         self.velocity1 += acceleration1 * timestep
         self.velocity2 += acceleration2 * timestep
         self.angleOfPendulumBob1 += self.velocity1 * timestep
