@@ -24,8 +24,14 @@ struct UserData: Codable, Equatable {
     var velocityOfBob2: Double = 0
     var firstPendulumBobStringColor: Color = Color.cyan
     var secondPendulumBobStringColor: Color = Color.orange
-    var lastPositionOfPendulumBob1: CGSize?
-    var lastPositionOfPendulumBob2: CGSize?
+    var lastPositionOfPendulumBob1: CGSize? = nil
+    var lastPositionOfPendulumBob2: CGSize? = nil
+    var lastAccelerationOfPendulumBob1: Double = 0
+    var lastAccelerationOfPendulumBob2: Double = 0
+    var lastVelocityOfPendulumBob1: Double = 0
+    var lastVelocityOfPendulumBob2: Double = 0
+    var preferredOriginPositionX: Double = 50.0
+    var preferredOriginPositionY: Double = 50.0
     var firstPendulumBobStringLength: Double = 30
     var secondPedulumBobStringLength: Double = 30
     var windowSize: CGSize = CGSize(width: 600, height: 600)

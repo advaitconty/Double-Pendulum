@@ -11,8 +11,8 @@ import Forever
 import Combine
 
 struct ContentView: View {
-    @Forever("userData") var userData: UserData = UserData()
-    @State var timestep: Double = 0.02
+    @ var userData: PersistenceManager = PersistenceManager()
+    @AppStorage("timestep") var timestep: Double = 0.02
     @StateObject var calculator: Calculator = Calculator()
     @State var pollingRate: Double = 200
     @State var timer = Timer.publish(every: 0.016, on: .main, in: .common).autoconnect()
@@ -37,15 +37,48 @@ struct ContentView: View {
                         calculator.timestep = timestep
                     }
                     .onChange(of: calculator.pivot1X) {
-                        userData.lastPositionOfPendulumBob1 = CGSize(width: calculator.pivot1X, height: calculator.pivot2X)
+                        userData.lastPositionOfPendulumBob1 = CGSize(width: calculator.pivot1X, height: calculator.pivot1Y)
+                        userData.lastPositionOfPendulumBob2 = CGSize(width: calculator.pivot2X, height: calculator.pivot2Y)
+                        userData.lastVelocityOfPendulumBob1 = calculator.velocity1
+                        userData.lastVelocityOfPendulumBob2 = calculator.velocity2
+                        userData.lastAccelerationOfPendulumBob1 = calculator.acceleration1
+                        userData.lastAccelerationOfPendulumBob2 = calculator.acceleration2
+                        userData.preferredOriginPositionX = calculator.originX
+                        userData.preferredOriginPositionY = calculator.originY
+                    }
+                    .onAppear {
+                        calculator.originX = userData.preferredOriginPositionX
+                        calculator.originY = userData.preferredOriginPositionY
+                        calculator.firstPendulumStringLength = userData.firstPendulumBobStringLength
+                        calculator.secondPendulumStringLength = userData.secondPedulumBobStringLength
+                        calculator.pendulumBobMass1 = userData.pendulumBobMass1
+                        calculator.pendulumBobMass2 = userData.pendulumBobMass2
+                        calculator.angleOfPendulumBob1 = (Double.pi / 2)
+                        calculator.angleOfPendulumBob2 = Double.pi / 2
+                        calculator.gravitationConstant = 9.81
+                        calculator.velocity1 = userData.lastVelocityOfPendulumBob1
+                        calculator.velocity2 = userData.lastVelocityOfPendulumBob2
+                        calculator.acceleration1 = userData.lastAccelerationOfPendulumBob1
+                        calculator.acceleration2 = userData.lastAccelerationOfPendulumBob2
+                        calculator.originX = userData.preferredOriginPositionX
+                        calculator.originY = userData.preferredOriginPositionY
+                        if userData.lastPositionOfPendulumBob1 != nil && userData.lastPositionOfPendulumBob2 != nil{
+                            calculator.pivot1X = userData.lastPositionOfPendulumBob1!.width
+                            calculator.pivot1X = userData.lastPositionOfPendulumBob1!.height
+                            calculator.pivot2X = userData.lastPositionOfPendulumBob2!.width
+                            calculator.pivot2X = userData.lastPositionOfPendulumBob2!.height
+                        }
+                        calculator.timestep = timestep
+                        calculator.trails1 = []
+                        calculator.trails2 = []
                     }
                 Button {
-                    calculator.originX = 50.0
-                    calculator.originY = 50.0
-                    calculator.firstPendulumStringLength = 120.0
-                    calculator.secondPendulumStringLength = 120.0
-                    calculator.pendulumBobMass1 = 50.0
-                    calculator.pendulumBobMass2 = 50.0
+                    calculator.originX = userData.preferredOriginPositionX
+                    calculator.originY = userData.preferredOriginPositionY
+                    calculator.firstPendulumStringLength = userData.firstPendulumBobStringLength
+                    calculator.secondPendulumStringLength = userData.secondPedulumBobStringLength
+                    calculator.pendulumBobMass1 = userData.pendulumBobMass1
+                    calculator.pendulumBobMass2 = userData.pendulumBobMass2
                     calculator.angleOfPendulumBob1 = (Double.pi / 2)
                     calculator.angleOfPendulumBob2 = Double.pi / 2
                     calculator.gravitationConstant = 9.81
