@@ -58,6 +58,19 @@ struct ContentView: View {
             .onChange(of: rememberedUserData) {
                 loadUserDataIntoCalculator()
             }
+            .onReceive(timer) { _ in
+                userData.lastPositionOfPendulumBob1X = calculator.pivot1X
+                userData.lastPositionOfPendulumBob1Y = calculator.pivot1Y
+                userData.lastPositionOfPendulumBob2X = calculator.pivot2X
+                userData.lastPositionOfPendulumBob2Y = calculator.pivot2Y
+                userData.lastVelocityOfPendulumBob1 = calculator.velocity1
+                userData.lastVelocityOfPendulumBob2 = calculator.velocity2
+                userData.lastAccelerationOfPendulumBob1 = calculator.acceleration1
+                userData.lastAccelerationOfPendulumBob2 = calculator.acceleration2
+                userData.preferredOriginPositionX = calculator.originX
+                userData.preferredOriginPositionY = calculator.originY
+                try? modelContext.save()
+            }
             if showSettings {
                 Group {
                     Divider()
@@ -102,7 +115,7 @@ struct ContentView: View {
                             .onChange(of: timestep) {
                                 calculator.timestep = timestep
                             }
-                            .onChange(of: calculator.pivot1X) {
+                            .onChange(of: calculator.pivot1X) { _ in
                                 userData.lastPositionOfPendulumBob1X = calculator.pivot1X
                                 userData.lastPositionOfPendulumBob1Y = calculator.pivot1Y
                                 userData.lastPositionOfPendulumBob2X = calculator.pivot2X
@@ -111,6 +124,11 @@ struct ContentView: View {
                                 userData.lastVelocityOfPendulumBob2 = calculator.velocity2
                                 userData.lastAccelerationOfPendulumBob1 = calculator.acceleration1
                                 userData.lastAccelerationOfPendulumBob2 = calculator.acceleration2
+                                userData.preferredOriginPositionX = calculator.originX
+                                userData.preferredOriginPositionY = calculator.originY
+                                saveUserData()
+                            }
+                            .onChange(of: calculator.originX) { _ in
                                 userData.preferredOriginPositionX = calculator.originX
                                 userData.preferredOriginPositionY = calculator.originY
                                 saveUserData()
