@@ -60,7 +60,16 @@ struct SettingsView: View {
                         Text("Pendulum String Size (Length in pixels)")
                             .fontWidth(.condensed)
                         Spacer()
-                        TextField("Diameter (px)", value: $userData.firstPendulumBobStringLength, format: .number)
+                        TextField("Length (px)", value: $userData.firstPendulumBobStringLength, format: .number)
+                            .fontWidth(.compressed)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 100)
+                    }
+                    HStack {
+                        Text("Max trail length\n(Controls the max trail length data to be stored, affecting trail length)")
+                            .fontWidth(.condensed)
+                        Spacer()
+                        TextField("100", value: $userData.pendulumBob1TrailDataMaxLength, format: .number)
                             .fontWidth(.compressed)
                             .textFieldStyle(.roundedBorder)
                             .frame(maxWidth: 100)
@@ -109,7 +118,16 @@ struct SettingsView: View {
                         Text("Pendulum String Size (Length in pixels)")
                             .fontWidth(.condensed)
                         Spacer()
-                        TextField("Diameter (px)", value: $userData.secondPedulumBobStringLength, format: .number)
+                        TextField("Length (px)", value: $userData.secondPedulumBobStringLength, format: .number)
+                            .fontWidth(.compressed)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 100)
+                    }
+                    HStack {
+                        Text("Max trail length\n(Controls the max trail length data to be stored, affecting trail length)")
+                            .fontWidth(.condensed)
+                        Spacer()
+                        TextField("100", value: $userData.pendulumBob2TrailDataMaxLength, format: .number)
                             .fontWidth(.compressed)
                             .textFieldStyle(.roundedBorder)
                             .frame(maxWidth: 100)
@@ -119,7 +137,7 @@ struct SettingsView: View {
             }
             Divider()
             HStack {
-                Text("Timestep (\(String(format: "%.3f", timestep)))\n(controls the stability of this chaotic system)")
+                Text("Timestep (\(String(format: "%.3f", timestep)))\n(controls the stability of this chaotic system - ideally around 0.01 to 0.06)")
                     .fontWidth(.condensed)
                     .italic()
                 Spacer()
@@ -130,7 +148,7 @@ struct SettingsView: View {
                     .frame(width: 200, height: 20)
             }
             HStack {
-                Text("Steps per frame (\(stepsPerFrame)fps)\nAffects the speed of the simulation")
+                Text("Steps per frame (\(String(format: "%.3f", stepsPerFrame))fps)\nAffects the speed of the simulation")
                     .fontWidth(.condensed)
                     .italic()
                 Spacer()

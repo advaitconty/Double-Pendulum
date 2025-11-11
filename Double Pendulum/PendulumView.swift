@@ -111,7 +111,7 @@ struct PendulumView: View {
                 .position(x: calculator.pivot2X, y: calculator.pivot2Y)
                 .foregroundStyle(userData.pendulumBobColor2)
         }
-        .frame(width: userData.windowSize.width, height: userData.windowSize.height)
+        .frame(width: CGFloat(userData.windowSizeX), height: CGFloat(userData.windowSizeY))
         .onReceive(timer) { _ in
             if !calculator.paused {
                 for _ in 0..<Int(stepsPerFrame) {
