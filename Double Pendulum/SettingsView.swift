@@ -158,6 +158,15 @@ struct SettingsView: View {
                     .compactSliderHandleStyle(.roundedRectangle())
                     .frame(width: 200, height: 20)
             }
+            HStack {
+                Text("Gravitational Field Strength (in N/kg)")
+                    .fontWidth(.condensed)
+                Spacer()
+                TextField("9.81", value: $userData.gravitationalField, format: .number)
+                    .fontWidth(.compressed)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: 100)
+            }
         }
         .padding()
     }
